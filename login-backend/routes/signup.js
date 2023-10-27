@@ -1,4 +1,5 @@
 const { jsonResponse } = require("../lib/jsonResponse");
+const User = require("../schema/user")
 
 const router = require("express").Router();
 
@@ -12,6 +13,8 @@ router.post("/", (req, res) => {
   }
 
   //crear usuario
+  const user = new User({userName, name, password})
+  user.save()
   res.status(200).json(jsonResponse(200, {message: "User created seccesfully"}))
 
   res.send("signup");
