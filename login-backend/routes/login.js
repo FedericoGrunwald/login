@@ -1,8 +1,9 @@
 const { jsonResponse } = require("../lib/jsonResponse");
-
+const User = require("../schema/user");
+const getUserInfo = require("../lib/getUserInfo") 
 const router = require("express").Router();
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   const { userName, password } = req.body;
 
   if (!!!userName || !!!password) {
@@ -11,17 +12,39 @@ router.post("/", (req, res) => {
       .json(jsonResponse(400, { error: "Fields are required" }));
   }
 
-  //autenticar usuario
-  const accessToken = "access_token"
-  const refreshToken = "refresh_token"
-  const user = {
-    id: "1",
-    name: "Fede",
-    userName: "Fedde",
-  }
-  
-  res.status(200).json(jsonResponse(200, {user, accessToken, refreshToken}))
+  const user = await User.findOne({ userName });
 
+  if (user) {
+    const correctPassword = await user.comparePassword(password, user.password);
+
+    if (correctPassword) {
+      //autenticar usuario
+      const accessToken = user.createAccessToken();
+      const refreshToken = await user.createRefreshToken();
+
+      res
+        .status(200)
+        .json(
+          jsonResponse(200, {
+            user: getUserInfo(user),
+            accessToken,
+            refreshToken,
+          })
+        );
+    } else {
+      res.status(401).json(
+        jsonResponse(401, {
+          error: "User or password incorrect",
+        })
+      );
+    }
+  } else {
+    res.status(401).json(
+      jsonResponse(401, {
+        error: "User not found",
+      })
+    );
+  }
 });
 
 module.exports = router;

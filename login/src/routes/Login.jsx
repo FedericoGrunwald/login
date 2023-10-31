@@ -28,7 +28,13 @@ function Login() {
       if (response.ok) {
         console.log("Login seccessful");
         setErrorResponse("")
-        goTo("/")
+        const json = (await response.json())
+        if(json.body.accessToken && json.body.refreshToken){
+          auth.saveUser(json)
+          goTo("/dashboard")
+        }
+
+        
       } else {
         console.log("Something went wrong");
         setErrorResponse(errorResponse + "Fields are required!!")
