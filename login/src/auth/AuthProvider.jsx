@@ -8,12 +8,14 @@ const AuthContext = createContext({
   saveUser: (userData) => {},
   getRefreshToken: () => {},
   getUser: () => {},
+  signOut: () => {},
 });
 
 export function AuthProvider({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [accessToken, setAccessToken] = useState("");
-  // const [refreshToken, setRefreshToken] = useState("");
+  const [refreshToken, setRefreshToken] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState();
 
   useEffect(() => {
@@ -73,6 +75,12 @@ export function AuthProvider({ children }) {
   async function checkAuth() {
     if (accessToken) {
       //usuario autenticado
+      const userInfo = await getUserInfo(accessToken);
+      if (userInfo) {
+        saveSessionInfo(userInfo, accessToken, getRefreshToken());
+        setIsLoading(false);
+        return;
+      }
     } else {
       //usuario no autenticado
       const token = getRefreshToken();
@@ -82,15 +90,26 @@ export function AuthProvider({ children }) {
           const userInfo = await getUserInfo(newAccessToken);
           if (userInfo) {
             saveSessionInfo(userInfo, newAccessToken, token);
+            setIsLoading(false);
+            return;
           }
         }
       }
     }
+    setIsLoading(false);
+  }
+
+  function signOut() {
+    setIsAuthenticated(false);
+    setAccessToken("");
+    setRefreshToken("");
+    setUser(undefined);
+    localStorage.removeItem("Token");
   }
 
   function saveSessionInfo(userInfo, accessToken, refreshToken) {
     setAccessToken(accessToken);
-    localStorage.setItem("token", JSON.stringify(refreshToken));
+    localStorage.setItem("Token", JSON.stringify(refreshToken));
     setIsAuthenticated(true);
     setUser(userInfo);
   }
@@ -99,7 +118,7 @@ export function AuthProvider({ children }) {
     return accessToken;
   }
   function getRefreshToken() {
-    const tokenData = localStorage.getItem("token");
+    const tokenData = localStorage.getItem("Token");
     if (tokenData) {
       const { token } = JSON.parse(tokenData);
       return token;
@@ -121,9 +140,16 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ isAuthenticated, getAccessToken, saveUser, getRefreshToken, getUser }}
+      value={{
+        isAuthenticated,
+        getAccessToken,
+        saveUser,
+        getRefreshToken,
+        getUser,
+        signOut,
+      }}
     >
-      {children}
+      {isLoading ? <div>Loading...</div> : children}
     </AuthContext.Provider>
   );
 }

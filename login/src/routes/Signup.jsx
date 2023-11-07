@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [name, setName] = useState("");
-  const [userName, setUserName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorResponse, setErrorResponse] = useState("")
 
@@ -23,7 +23,7 @@ function Signup() {
         },
         body: JSON.stringify({
           name,
-          userName,
+          username,
           password,
         }),
       });
@@ -68,8 +68,8 @@ function Signup() {
           <input
             className="font-bold text-white border-2 border-white rounded-lg bg-blue-700"
             type="text"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <br />
           <label className="font-bold text-white">Password</label>

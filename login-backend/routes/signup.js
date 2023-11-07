@@ -22,10 +22,10 @@ router.post("/", async (req, res) => {
       return res.status(409).json(jsonResponse(409, {error: "User Name already exists"}))
     }else{
       const newUser = new User({userName, name, password})
-      newUser.save()
+      await newUser.save()
       res.status(200).json(jsonResponse(200, {message: "User created seccesfully"}))
 
-    // res.send("signup");
+    res.send("signout");
     }
     
   } catch(error){

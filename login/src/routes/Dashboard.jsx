@@ -1,6 +1,7 @@
 import { useAuth } from "../auth/AuthProvider";
 import { useEffect, useState } from "react";
 import { API_URL } from "../auth/constants";
+import PortalLayout from "../layout/PortalLayout";
 
 function Dashboard() {
   const [todos, setTodos] = useState([]);
@@ -59,7 +60,7 @@ function Dashboard() {
   }
 
   return (
-    <div>
+    <PortalLayout>
       <h1>Dashboard de {auth.getUser()?.name || ""}</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -72,7 +73,7 @@ function Dashboard() {
       {todos.map((todo) => (
         <div key={todo._id}>{todo.title}</div>
       ))}
-    </div>
+    </PortalLayout>
   );
 }
 export default Dashboard;
