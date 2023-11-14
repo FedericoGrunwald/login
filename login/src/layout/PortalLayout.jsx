@@ -7,38 +7,40 @@ function PortalLayout({ children }) {
 
   async function handleSignOut(e) {
     e.preventDefault();
-
     try {
       const response = await fetch(`${API_URL}/signout`, {
         method: "DELETE",
         headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.getRefreshToken()}`,
-        },
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.getRefreshToken()}`,
+      },
       });
 
       if (response.ok) {
         auth.signOut();
+      }else {
+        const errorData = await response.json(); // Obtén más detalles del error si está disponible
+        console.log("Error during signout:", errorData);
       }
     } catch (error) {
-        console.log(error)
+      console.log("Error during signout:", error);
     }
   }
   return (
     <>
-      <header>
+      <header className="w-full h-20">
         <nav>
-          <ul>
-            <li>
+          <ul className="flex justify-start">
+            <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
               <Link to="/dashboard">Dashboard</Link>
             </li>
-            <li>
+            <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
               <Link to="/me">Profile</Link>
             </li>
-            <li>
-              <Link to="/me">{auth.getUser()?.username ?? ""}</Link>
+            <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
+              <Link to="/me">{auth.getUser()?.userName ?? ""}</Link>
             </li>
-            <li>
+            <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
               <a href="#" onClick={handleSignOut}>
                 Sign out
               </a>
@@ -47,7 +49,7 @@ function PortalLayout({ children }) {
         </nav>
       </header>
 
-      <main>{children}</main>
+      <main  className="ml-6">{children}</main>
     </>
   );
 }

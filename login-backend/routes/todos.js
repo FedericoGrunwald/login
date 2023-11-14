@@ -10,7 +10,8 @@ router.get("/", async (req, res) => {
       res.status(404).json({error:"No todos found"})
     }
   } catch (error) {
-    console.log(error)
+    console.error("Error fetching todos:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 router.post("/", async (req, res) => {
@@ -28,8 +29,9 @@ router.post("/", async (req, res) => {
     const newTodo = await todo.save()
     res.json(newTodo)
   } catch (error) {
-    console.log(error)
+    console.error("Error creating todo:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-module.exports = router;
+module.exports = router; 

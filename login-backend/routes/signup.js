@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
       .json(jsonResponse(409, { error: "Fields are required" }));
   }
 
-  //crear usuario
+  // crear usuario
   // const user = new User({userName, name, password})
   try {
   const user = new User()
@@ -25,7 +25,7 @@ router.post("/", async (req, res) => {
       await newUser.save()
       res.status(200).json(jsonResponse(200, {message: "User created seccesfully"}))
 
-    res.send("signout");
+    // res.send("signout");
     }
     
   } catch(error){

@@ -33,7 +33,7 @@ UserSchema.pre("save", function (next) {
 });
 
 UserSchema.methods.userNameExist = async function (userName) {
-  const result = await Mongoose.model("User").findOne({ userName });
+  const result = await Mongoose.model("User").findOne({ userName: userName });
 
   return !!result;
 };
@@ -46,10 +46,12 @@ UserSchema.methods.comparePassword = async function (password, hash) {
 UserSchema.methods.createAccessToken = function () {
   return generateAccessToken(getUserInfo(this));
 };
-UserSchema.methods.createRefreshToken = async function () {
+UserSchema.methods.createRefreshToken = async function (next) {
   const refreshToken = generateRefreshToken(getUserInfo(this));
+  console.error("refreshToken", refreshToken);
   try {
     await new Token({ token: refreshToken }).save();
+    console.log("Token saved", refreshToken);
     return refreshToken;
   } catch (error) {
     console.error(error);

@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function Signup() {
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [errorResponse, setErrorResponse] = useState("")
 
@@ -23,18 +23,23 @@ function Signup() {
         },
         body: JSON.stringify({
           name,
-          username,
+          userName,
           password,
         }),
       });
 
       if (response.ok) {
+        const json = (await response.json())
+        console.log(json);
         console.log("User created seccessfully");
         setErrorResponse("")
-        goTo("/")
+        setUserName("");
+        setPassword("");
+        setName("");
+        goTo("/");
       } else {
-        console.log("Something went wrong");
-        setErrorResponse(errorResponse + "Fields are required!!")
+        const json = (await response.json())
+        setErrorResponse(json.body.error);
       }
     } catch (error) {
       console.log(error)
@@ -68,8 +73,8 @@ function Signup() {
           <input
             className="font-bold text-white border-2 border-white rounded-lg bg-blue-700"
             type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
           />
           <br />
           <label className="font-bold text-white">Password</label>

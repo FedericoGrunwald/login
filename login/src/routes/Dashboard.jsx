@@ -46,24 +46,25 @@ function Dashboard() {
           Authorization: `Bearer ${auth.getAccessToken()}`,
         },
       });
-
+  
       if (response.ok) {
         const json = await response.json();
         setTodos(json);
       } else {
-        //mostrar error
+        const errorData = await response.json();
+        console.error("Error fetching todos:", errorData);
       }
-
-      const data = await response.json();
-      setTodos(data);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Unexpected error fetching todos:", error);
+    }
   }
 
   return (
     <PortalLayout>
-      <h1>Dashboard de {auth.getUser()?.name || ""}</h1>
+      <h1 className="font-bold">Dashboard de {auth.getUser()?.name || ""}</h1>
       <form onSubmit={handleSubmit}>
         <input
+          className="font-bold text-black border-2 border-blue-700 rounded-lg"
           type="text"
           placeholder="Nuevo Todo..."
           onChange={(e) => setTitle(e.target.value)}

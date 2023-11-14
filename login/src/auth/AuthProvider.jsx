@@ -30,6 +30,7 @@ export function AuthProvider({ children }) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${refreshToken}`,
         },
+        body: JSON.stringify({ refreshToken }),
       });
 
       if (response.ok) {
@@ -42,8 +43,8 @@ export function AuthProvider({ children }) {
         throw new Error(response.statusText);
       }
     } catch (error) {
-      console.log(error);
-      return null;
+      console.error("Error during requestNewAccessToken:", error.message);
+      throw new Error("Error al solicitar un nuevo token de acceso");
     }
   }
 
@@ -67,14 +68,14 @@ export function AuthProvider({ children }) {
         throw new Error(response.statusText);
       }
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
       return null;
     }
   }
 
   async function checkAuth() {
     if (accessToken) {
-      //usuario autenticado
+      // usuario autenticado
       const userInfo = await getUserInfo(accessToken);
       if (userInfo) {
         saveSessionInfo(userInfo, accessToken, getRefreshToken());
@@ -82,17 +83,21 @@ export function AuthProvider({ children }) {
         return;
       }
     } else {
-      //usuario no autenticado
+      // usuario no autenticado
       const token = getRefreshToken();
       if (token) {
-        const newAccessToken = await requestNewAccessToken(token);
-        if (newAccessToken) {
-          const userInfo = await getUserInfo(newAccessToken);
-          if (userInfo) {
-            saveSessionInfo(userInfo, newAccessToken, token);
-            setIsLoading(false);
-            return;
+        try {
+          const newAccessToken = await requestNewAccessToken(token);
+          if (newAccessToken) {
+            const userInfo = await getUserInfo(newAccessToken);
+            if (userInfo) {
+              saveSessionInfo(userInfo, newAccessToken, token);
+              setIsLoading(false);
+              return;
+            }
           }
+        } catch (error) {
+          console.error("Error during checkAuth:", error.message);
         }
       }
     }
@@ -104,34 +109,39 @@ export function AuthProvider({ children }) {
     setAccessToken("");
     setRefreshToken("");
     setUser(undefined);
-    localStorage.removeItem("Token");
+    localStorage.removeItem("token");
   }
 
-  function saveSessionInfo(userInfo, accessToken, refreshToken) {
-    setAccessToken(accessToken);
-    localStorage.setItem("Token", JSON.stringify(refreshToken));
+  function saveUser(userData) { 
+    saveSessionInfo(
+      userData.body.accessToken,
+      userData.body.refreshToken
+    );
+    setUser(userData.body.user)
     setIsAuthenticated(true);
-    setUser(userInfo);
+}
+
+  function saveSessionInfo(accessToken, refreshToken) {
+    setAccessToken(accessToken);
+    setRefreshToken(refreshToken);
+    localStorage.setItem("token", JSON.stringify({ refreshToken }));
   }
 
   function getAccessToken() {
     return accessToken;
   }
   function getRefreshToken() {
-    const tokenData = localStorage.getItem("Token");
+    if (!!refreshToken) {
+      return refreshToken;
+    }
+    const tokenData = localStorage.getItem("token");
     if (tokenData) {
-      const { token } = JSON.parse(tokenData);
-      return token;
+      const { refreshToken : storedRefreshToken } = JSON.parse(
+        tokenData || "{}"
+      );
+      return storedRefreshToken;
     }
     return null;
-  }
-
-  function saveUser(userData) {
-    saveSessionInfo(
-      userData.body.user,
-      userData.body.accessToken,
-      userData.body.refreshToken
-    );
   }
 
   function getUser() {

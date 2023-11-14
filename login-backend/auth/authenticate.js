@@ -1,28 +1,31 @@
+const log = require("../lib/trace");
 const { jsonResponse } = require("../lib/jsonResponse");
 const getTokenFromHeader = require("./getTokenFromHeader");
 const { verifyAccessToken } = require("./verifyTokens");
 
 function authenticate(req, res, next) {
-  const token = getTokenFromHeader(req.headers);
-
-  if (token) {
-    const decoded = verifyAccessToken(token);
-    if (decoded) {
-      req.user = { ...decoded.user };
-      next();
-    } else {
-      res.status(401).json(
-        jsonResponse(401, {
-          menssage: "no token provided",
-        })
-      );
+  let token = null;
+  log.info("headers", req.headers);
+  try {
+    token = getTokenFromHeader(req.headers)
+  } catch (error) {
+    log.error(error.message);
+    if (error.message === "Token not provided") {
+      return res.status(401).json({ error: "Token no proporcionado" });
     }
-  } else {
-    res.status(401).json(
-      jsonResponse(401, {
-        menssage: "no token provided",
-      })
-    );
+    if (error.message === "Token format invalid") {
+      return res.status(401).json({ error: "Token mal formado" });
+    }
+  }
+
+  try {
+    const decoded = verifyAccessToken(token);
+    req.user = { ...decoded.user };
+    log.info("Token verificado correctamente");
+    next();
+  } catch (err) {
+    console.error("6 Token inválido", token, err);
+    return res.status(401).json({ error: "Token inválido" });
   }
 }
 module.exports = authenticate;

@@ -1,4 +1,4 @@
-function getTokenFromHeader(headers) {
+const getTokenFromHeader = (headers) => {
   if (headers && headers.authorization) {
     const parted = headers.authorization.split(" ");
     if (parted.length === 2) {
@@ -11,4 +11,4 @@ function getTokenFromHeader(headers) {
   }
 }
 
-module.exports = getTokenFromHeader;
+module.exports = getTokenFromHeader; 
