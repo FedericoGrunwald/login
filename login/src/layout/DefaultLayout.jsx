@@ -4,13 +4,13 @@ import { Link } from "react-router-dom"
 function DefaultLayout({children}) {
   return (
     <>
-    <header className="w-full h-14 bg-blue-100">
+    <header className="w-full h-14 bg-teal-100">
         <nav className="">
             <ul className="flex justify-start mt">
-                <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
+                <li className="m-4 rounded-lg font-bold border-2 border-teal-500 bg-teal-400">
                     <Link to="/"> Home</Link>
                 </li>
-                <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
+                <li className="m-4 rounded-lg font-bold border-2 border-teal-500 bg-teal-400">
                     <Link to="/signup"> Signup</Link>
                 </li>
             </ul>

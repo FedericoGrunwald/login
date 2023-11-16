@@ -31,16 +31,16 @@ function PortalLayout({ children }) {
       <header className="w-full h-20">
         <nav>
           <ul className="flex justify-start">
-            <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
+            <li className="font-bold m-4 text-white border-2 border-teal-500 bg-teal-400 rounded-lg">
               <Link to="/dashboard">Dashboard</Link>
             </li>
-            <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
+            <li className="font-bold m-4 text-white border-2 border-teal-500 bg-teal-400 rounded-lg">
               <Link to="/me">Profile</Link>
             </li>
-            <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
+            <li className="font-bold m-4 text-white border-2 border-teal-500 bg-teal-400 rounded-lg">
               <Link to="/me">{auth.getUser()?.userName ?? ""}</Link>
             </li>
-            <li className="m-4 bg-white rounded-lg font-bold border-2 border-blue-700">
+            <li className="font-bold m-4 text-white border-2 border-teal-400 bg-teal-500 rounded-lg">
               <a href="#" onClick={handleSignOut}>
                 Sign out
               </a>

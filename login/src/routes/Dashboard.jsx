@@ -32,6 +32,7 @@ function Dashboard() {
       if (response.ok) {
         const json = await response.json();
         setTodos([json, ...todos]);
+        setTitle("");
       } else {
         //error
       }
@@ -46,7 +47,7 @@ function Dashboard() {
           Authorization: `Bearer ${auth.getAccessToken()}`,
         },
       });
-  
+
       if (response.ok) {
         const json = await response.json();
         setTodos(json);
@@ -58,22 +59,110 @@ function Dashboard() {
       console.error("Unexpected error fetching todos:", error);
     }
   }
+  async function handleComplete(todoId) {
+    try {
+      const response = await fetch(`${API_URL}/todos/${todoId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.getAccessToken()}`,
+        },
+        body: JSON.stringify({ completed: true }),
+      });
+
+      if (response.ok) {
+        const updatedTodos = todos.map((todo) =>
+          todo._id === todoId ? { ...todo, completed: true } : todo
+        );
+        setTodos(updatedTodos);
+      } else {
+      }
+    } catch (error) {
+      // Manejo de errores
+    }
+  }
+
+  async function handleDelete(todoId) {
+    try {
+      const response = await fetch(`${API_URL}/todos/${todoId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.getAccessToken()}`,
+        },
+      });
+
+      if (response.ok) {
+        const updatedTodos = todos.filter((todo) => todo._id !== todoId);
+        setTodos(updatedTodos);
+      } else {
+        // Manejar errores si es necesario
+      }
+    } catch (error) {
+      // Manejar errores si es necesario
+    }
+  }
+
+  async function handleDeleteCompleted() {
+    try {
+      const completedTodos = todos.filter((todo) => todo.completed);
+      if (completedTodos.length === 0) {
+        // No hay tareas completadas para eliminar
+        return;
+      }
+      const todoIds = completedTodos.map((todo) => todo._id);
+      const response = await fetch(`${API_URL}/todos`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${auth.getAccessToken()}`,
+        },
+        body: JSON.stringify({ todoIds }),
+      });
+
+      if (response.ok) {
+        const updatedTodos = todos.filter((todo) => !todo.completed);
+        setTodos(updatedTodos);
+      } else {
+        // Manejar errores si es necesario
+      }
+    } catch (error) {
+      // Manejar errores si es necesario
+    }
+  }
 
   return (
     <PortalLayout>
-      <h1 className="font-bold">Dashboard de {auth.getUser()?.name || ""}</h1>
+      <h1 className="font-bold m-4 text-white border-2 border-teal-500 bg-teal-400 rounded-lg">Dashboard de {auth.getUser()?.name || ""}</h1>
       <form onSubmit={handleSubmit}>
         <input
-          className="font-bold text-black border-2 border-blue-700 rounded-lg"
+          className="font-bold m-4 text-black border-2 border-teal-500 bg-white rounded-lg"
           type="text"
-          placeholder="Nuevo Todo..."
+          placeholder="New Tasks..."
           onChange={(e) => setTitle(e.target.value)}
           value={title}
         />
       </form>
       {todos.map((todo) => (
-        <div key={todo._id}>{todo.title}</div>
+        <div key={todo._id}>
+          <span className="font-bold m-4 text-white border-2 border-green-500 bg-green-400 rounded-lg"
+            style={{ textDecoration: todo.completed ? "line-through" : "none" }}
+          > {todo.title}
+          </span>
+          {!todo.completed && (
+            <>
+              <button className="font-bold m-4 text-white border-2 border-blue-500 bg-blue-600 rounded-lg" 
+                onClick={() => handleComplete(todo._id)}> Completed
+              </button>
+              <button  className="font-bold m-4 text-white border-2 border-red-600 bg-red-700 rounded-lg" onClick={() => handleDelete(todo._id)}> Delete</button>
+            </>
+          )}
+        </div>
       ))}
+      <button className="font-bold m-4 text-white border-2 border-red-600 bg-red-700 rounded-lg" onClick={handleDeleteCompleted}>
+        {" "}
+        Delete Completed Tasks
+      </button>
     </PortalLayout>
   );
 }
