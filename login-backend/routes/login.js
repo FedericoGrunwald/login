@@ -12,7 +12,7 @@ router.post("/", async (req, res) => {
       .json(jsonResponse(400, { error: "Fields are required" }));
   }
 
-  const user = await User.findOne({ userName: userName });
+  const user = await User.findOne({ userName: userName }); 
 
   if (user) {
     const correctPassword = await user.comparePassword(password, user.password);
@@ -22,8 +22,6 @@ router.post("/", async (req, res) => {
       const accessToken = await user.createAccessToken();
       const refreshToken = await user.createRefreshToken();
       
-      console.log({ accessToken, refreshToken });
-
       res
         .status(200)
         .json(

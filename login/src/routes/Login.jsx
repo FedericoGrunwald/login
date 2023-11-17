@@ -52,7 +52,7 @@ function Login() {
       <DefaultLayout>
         <form
           onSubmit={handleSubmit}
-          className="w-72 h-full flex flex-col border-2 border-teal-500 rounded-lg bg-teal-400"
+          className="w-72 h-full flex flex-col border-2 border-teal-500 rounded-lg bg-teal-400 text-teal-400"
         >
           {errorShown && (
             <h1 className="flex justify-center  border-red-600 bg-red-700 rounded-lg font-bold">
@@ -79,7 +79,7 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
           <br />
-          <button className="flex justify-center font-bold text-white border-2 border-white rounded-lg bg-teal-400">
+          <button className="flex justify-center font-bold text-white border-2 border-white rounded-lg bg-teal-400 hover:bg-white hover:border-teal-300 hover:text-teal-400">
             Login
           </button>
         </form>

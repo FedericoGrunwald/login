@@ -1,9 +1,8 @@
-
 const express = require("express");
 const cors = require("cors");
 const app = express();
 const mongoose = require("mongoose");
-const authenticate = require("./auth/authenticate")
+const authenticate = require("./auth/authenticate");
 
 require("dotenv").config();
 
@@ -12,12 +11,12 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-async function main(){
-  await mongoose.connect(process.env.DB_CONNECTION_STRING)
-  console.log("connected to mongoDB")
-} 
+async function main() {
+  await mongoose.connect(process.env.DB_CONNECTION_STRING);
+  console.log("connected to mongoDB");
+}
 
-main().catch(console.error)
+main().catch(console.error);
 
 app.use("/api/signup", require("./routes/signup"));
 app.use("/api/login", require("./routes/login"));

@@ -8,10 +8,10 @@ const log = require("../lib/trace");
 const router = require("express").Router();
 
 router.post("/", async (req, res) => {
-  log.info("POST /api/refresh-token");
+  // log.info("POST /api/refresh-token");
   const refreshToken = req.body.refreshToken;
   if (!refreshToken) {
-    console.log("No se proporcionó token de actualización", refreshToken);
+    console.log("No se proporcionó token de actualización");
     return res
       .status(401)
       .json({ error: "Token de actualización no proporcionado" });

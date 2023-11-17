@@ -5,9 +5,9 @@ const { verifyAccessToken } = require("./verifyTokens");
 
 function authenticate(req, res, next) {
   let token = null;
-  log.info("headers", req.headers);
+  // log.info("headers", req.headers);
   try {
-    token = getTokenFromHeader(req.headers)
+    token = getTokenFromHeader(req.headers);
   } catch (error) {
     log.error(error.message);
     if (error.message === "Token not provided") {
@@ -21,7 +21,7 @@ function authenticate(req, res, next) {
   try {
     const decoded = verifyAccessToken(token);
     req.user = { ...decoded.user };
-    log.info("Token verificado correctamente");
+    // log.info("Token verificado correctamente");
     next();
   } catch (err) {
     console.error("6 Token inválido", token, err);

@@ -112,14 +112,11 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("token");
   }
 
-  function saveUser(userData) { 
-    saveSessionInfo(
-      userData.body.accessToken,
-      userData.body.refreshToken
-    );
-    setUser(userData.body.user)
+  function saveUser(userData) {
+    saveSessionInfo(userData.body.accessToken, userData.body.refreshToken);
+    setUser(userData.body.user);
     setIsAuthenticated(true);
-}
+  }
 
   function saveSessionInfo(accessToken, refreshToken) {
     setAccessToken(accessToken);
@@ -136,7 +133,7 @@ export function AuthProvider({ children }) {
     }
     const tokenData = localStorage.getItem("token");
     if (tokenData) {
-      const { refreshToken : storedRefreshToken } = JSON.parse(
+      const { refreshToken: storedRefreshToken } = JSON.parse(
         tokenData || "{}"
       );
       return storedRefreshToken;

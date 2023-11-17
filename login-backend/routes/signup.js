@@ -12,8 +12,6 @@ router.post("/", async (req, res) => {
       .json(jsonResponse(409, { error: "Fields are required" }));
   }
 
-  // crear usuario
-  // const user = new User({userName, name, password})
   try {
   const user = new User()
     const exists = await user.userNameExist(userName)

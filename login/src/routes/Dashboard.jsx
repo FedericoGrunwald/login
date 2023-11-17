@@ -133,7 +133,9 @@ function Dashboard() {
 
   return (
     <PortalLayout>
-      <h1 className="font-bold m-4 text-white border-2 border-teal-500 bg-teal-400 rounded-lg">Dashboard de {auth.getUser()?.name || ""}</h1>
+      <h1 className="w-fit font-bold m-4 text-white border-2 border-teal-500 bg-teal-400 rounded-lg">
+        Dashboard de {auth.getUser()?.name || ""}
+      </h1>
       <form onSubmit={handleSubmit}>
         <input
           className="font-bold m-4 text-black border-2 border-teal-500 bg-white rounded-lg"
@@ -145,21 +147,37 @@ function Dashboard() {
       </form>
       {todos.map((todo) => (
         <div key={todo._id}>
-          <span className="font-bold m-4 text-white border-2 border-green-500 bg-green-400 rounded-lg"
+          <span
+            className="font-bold m-4 text-white border-2 border-green-500 bg-green-400 rounded-lg"
             style={{ textDecoration: todo.completed ? "line-through" : "none" }}
-          > {todo.title}
+          >
+            {" "}
+            {todo.title}
           </span>
           {!todo.completed && (
             <>
-              <button className="font-bold m-4 text-white border-2 border-blue-500 bg-blue-600 rounded-lg" 
-                onClick={() => handleComplete(todo._id)}> Completed
+              <button
+                className="font-bold m-4 text-white border-2 border-blue-500 bg-blue-600 rounded-lg hover:bg-blue-500 hover:border-blue-400"
+                onClick={() => handleComplete(todo._id)}
+              >
+                {" "}
+                Completed
               </button>
-              <button  className="font-bold m-4 text-white border-2 border-red-600 bg-red-700 rounded-lg" onClick={() => handleDelete(todo._id)}> Delete</button>
+              <button
+                className="font-bold m-4 text-white border-2 border-red-600 bg-red-700 rounded-lg hover:bg-red-600 hover:border-red-500"
+                onClick={() => handleDelete(todo._id)}
+              >
+                {" "}
+                Delete
+              </button>
             </>
           )}
         </div>
       ))}
-      <button className="font-bold m-4 text-white border-2 border-red-600 bg-red-700 rounded-lg" onClick={handleDeleteCompleted}>
+      <button
+        className="font-bold m-4 text-white border-2 border-red-600 bg-red-700 rounded-lg hover:bg-red-600 hover:border-red-500"
+        onClick={handleDeleteCompleted}
+      >
         {" "}
         Delete Completed Tasks
       </button>
